@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
+import './App.css'; // Import the CSS file
 
+// Options for the select dropdown
 const options = [
   { value: 'alphabets', label: 'Alphabets' },
   { value: 'numbers', label: 'Numbers' },
@@ -44,6 +46,8 @@ const App = () => {
 
         const data = await response.json();
         setApiResponse(data);
+        setSelectedOptions([])
+        setFilteredResponse(data.filteredData);
       } catch (error) {
         console.error('Error fetching API:', error);
       }
@@ -59,12 +63,18 @@ const App = () => {
       const filtered = {};
 
       selected.forEach((option) => {
-        if (option.value === 'alphabets') {
-          filtered.alphabets = apiResponse.alphabets;
-        } else if (option.value === 'numbers') {
-          filtered.numbers = apiResponse.numbers;
-        } else if (option.value === 'highest_lowercase_alphabet') {
-          filtered.highest_lowercase_alphabet = apiResponse.highest_lowercase_alphabet;
+        switch (option.value) {
+          case 'alphabets':
+            filtered.alphabets = apiResponse.alphabets;
+            break;
+          case 'numbers':
+            filtered.numbers = apiResponse.numbers;
+            break;
+          case 'highest_lowercase_alphabet':
+            filtered.highest_lowercase_alphabet = apiResponse.highest_lowercase_alphabet;
+            break;
+          default:
+            break;
         }
       });
 
@@ -73,34 +83,41 @@ const App = () => {
   };
 
   return (
-    <div className="App">
-      <h1>JSON Input and API Response</h1>
+    <div className="app-container">
+      <h1 className="header">JSON Input and API Response</h1>
+      
       <textarea
+        className="json-input"
         placeholder="Enter JSON here"
         value={jsonInput}
         onChange={handleJsonInputChange}
         rows={10}
-        cols={50}
       />
-      <br />
-      <button onClick={handleSubmit}>Submit</button>
-      {!isValidJson && <p style={{ color: 'red' }}>Invalid JSON format!</p>}
-
+      
+      <button className="submit-button" onClick={handleSubmit} >Submit</button>
+      
+      {!isValidJson && <p className="error-message">Invalid JSON format!</p>}
+      
       {apiResponse && (
-        <>
+        <div className="response-container">
           <Select
             isMulti
             options={options}
+            value={selectedOptions}
             onChange={handleSelectChange}
+            className="select-dropdown"
           />
-          <div>
-            <h3>Filtered Response:</h3>
-            <pre>{JSON.stringify(filteredResponse, null, 2)}</pre>
-          </div>
-        </>
+          
+          {filteredResponse && (
+            <div className="filtered-response">
+              <h3>Filtered Response:</h3>
+              <pre>{JSON.stringify(filteredResponse, null, 2)}</pre>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
 };
 
-export default App;
+export default App;
