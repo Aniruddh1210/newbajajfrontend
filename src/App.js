@@ -34,7 +34,7 @@ const App = () => {
       const parsedJson = JSON.parse(jsonInput);
 
       try {
-        const response = await fetch('http://localhost:3000/bfhl', { // Update this URL to your actual API URL
+        const response = await fetch('https://newbajajbackend.onrender.com/bfhl', { // Update this URL to your actual API URL
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
